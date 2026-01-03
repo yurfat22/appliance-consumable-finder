@@ -1,0 +1,691 @@
+[
+  {
+    "model": "WHIRLPOOL-WRF535SWHZ",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "EDR2RXD1",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=EDR2RXD1"
+      },
+      {
+        "name": "FreshFlow air filter",
+        "type": "filter",
+        "sku": "W10311524",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=W10311524"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-RF28R7351SR",
+    "brand": "Samsung",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "HAF-QIN/EXP",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=HAF-QIN%2FEXP"
+      },
+      {
+        "name": "Refrigerator air filter",
+        "type": "filter",
+        "sku": "DA97-21326A",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=DA97-21326A"
+      }
+    ]
+  },
+  {
+    "model": "FRIGIDAIRE-FFFU16F2VW",
+    "brand": "Frigidaire",
+    "category": "freezer",
+    "consumables": [
+      {
+        "name": "Freezer air filter",
+        "type": "filter",
+        "sku": "AFP2CB",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=AFP2CB"
+      }
+    ]
+  },
+  {
+    "model": "GE-FUF21DLRWW",
+    "brand": "GE",
+    "category": "freezer",
+    "consumables": [
+      {
+        "name": "Freezer deodorizer cartridge",
+        "type": "filter",
+        "sku": "WX08X10019",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=WX08X10019"
+      }
+    ]
+  },
+  {
+    "model": "LG-WM4000HWA",
+    "brand": "LG",
+    "category": "washer",
+    "consumables": [
+      {
+        "name": "Washer inlet filter",
+        "type": "filter",
+        "sku": "AGF80300704",
+        "notes": "Clean every 3-6 months; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=AGF80300704"
+      },
+      {
+        "name": "Washer drain pump filter",
+        "type": "filter",
+        "sku": "383EER2001A",
+        "purchase_url": "https://www.amazon.com/s?k=383EER2001A"
+      }
+    ]
+  },
+  {
+    "model": "MAYTAG-MVW7230HW",
+    "brand": "Maytag",
+    "category": "washer",
+    "consumables": [
+      {
+        "name": "Inlet screen filter",
+        "type": "filter",
+        "sku": "W11165546",
+        "notes": "Clean periodically; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=W11165546"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-DV45K6500EV",
+    "brand": "Samsung",
+    "category": "dryer",
+    "consumables": [
+      {
+        "name": "Dryer lint screen",
+        "type": "filter",
+        "sku": "DC97-16742A",
+        "notes": "Clean after each cycle; replace if torn.",
+        "purchase_url": "https://www.amazon.com/s?k=DC97-16742A"
+      },
+      {
+        "name": "Drum light bulb",
+        "type": "bulb",
+        "sku": "6009-001526",
+        "purchase_url": "https://www.amazon.com/s?k=6009-001526"
+      }
+    ]
+  },
+  {
+    "model": "WHIRLPOOL-WED49STBW",
+    "brand": "Whirlpool",
+    "category": "dryer",
+    "consumables": [
+      {
+        "name": "Dryer lint screen",
+        "type": "filter",
+        "sku": "W10828351",
+        "purchase_url": "https://www.amazon.com/s?k=W10828351"
+      },
+      {
+        "name": "Drum light bulb",
+        "type": "bulb",
+        "sku": "4393681",
+        "purchase_url": "https://www.amazon.com/s?k=4393681"
+      }
+    ]
+  },
+  {
+    "model": "PANASONIC-NN-SN966S",
+    "brand": "Panasonic",
+    "category": "microwave",
+    "consumables": [
+      {
+        "name": "Charcoal filter",
+        "type": "filter",
+        "sku": "FZHF70",
+        "notes": "Replace every 6 months for over-the-range use.",
+        "purchase_url": "https://www.amazon.com/s?k=FZHF70"
+      }
+    ]
+  },
+  {
+    "model": "GE-JVM3160RFSS",
+    "brand": "GE",
+    "category": "microwave",
+    "consumables": [
+      {
+        "name": "Charcoal filter",
+        "type": "filter",
+        "sku": "WB06X10823",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=WB06X10823"
+      },
+      {
+        "name": "Cooktop light bulb",
+        "type": "bulb",
+        "sku": "WB36X10003",
+        "purchase_url": "https://www.amazon.com/s?k=WB36X10003"
+      }
+    ]
+  },
+  {
+    "model": "GE-JGBS66REKSS",
+    "brand": "GE",
+    "category": "stove",
+    "consumables": [
+      {
+        "name": "Oven light bulb",
+        "type": "bulb",
+        "sku": "40A15",
+        "purchase_url": "https://www.amazon.com/s?k=40A15+appliance+bulb"
+      }
+    ]
+  },
+  {
+    "model": "FRIGIDAIRE-FFEF3054TS",
+    "brand": "Frigidaire",
+    "category": "stove",
+    "consumables": [
+      {
+        "name": "Oven light bulb",
+        "type": "bulb",
+        "sku": "316538904",
+        "purchase_url": "https://www.amazon.com/s?k=316538904"
+      },
+      {
+        "name": "Anti-tip bracket kit",
+        "type": "safety",
+        "sku": "316112005",
+        "purchase_url": "https://www.amazon.com/s?k=316112005"
+      }
+    ]
+  },
+  {
+    "model": "BOSCH-SHEM63W55N",
+    "brand": "Bosch",
+    "category": "dishwasher",
+    "consumables": [
+      {
+        "name": "Dishwasher filter",
+        "type": "filter",
+        "sku": "00645038",
+        "notes": "Inspect monthly; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=00645038"
+      },
+      {
+        "name": "Rinse aid",
+        "type": "consumable",
+        "sku": "JETDRY",
+        "notes": "Refill as needed.",
+        "purchase_url": "https://www.amazon.com/s?k=JETDRY"
+      }
+    ]
+  },
+  {
+    "model": "KITCHENAID-KDPM604KPS",
+    "brand": "KitchenAid",
+    "category": "dishwasher",
+    "consumables": [
+      {
+        "name": "Dishwasher filter",
+        "type": "filter",
+        "sku": "W10872845",
+        "purchase_url": "https://www.amazon.com/s?k=W10872845"
+      },
+      {
+        "name": "Rinse aid",
+        "type": "consumable",
+        "sku": "JETDRY",
+        "purchase_url": "https://www.amazon.com/s?k=JETDRY"
+      }
+    ]
+  },
+  {
+    "model": "GOODMAN-GSX160241",
+    "brand": "Goodman",
+    "category": "hvac",
+    "consumables": [
+      {
+        "name": "HVAC air filter 16x25x1",
+        "type": "filter",
+        "sku": "MERV-8-16x25x1",
+        "notes": "Replace every 1-3 months depending on usage.",
+        "purchase_url": "https://www.amazon.com/s?k=MERV-8-16x25x1"
+      }
+    ]
+  },
+  {
+    "model": "TRANE-SXV060G4RXC",
+    "brand": "Trane",
+    "category": "hvac",
+    "consumables": [
+      {
+        "name": "HVAC air filter 20x25x4",
+        "type": "filter",
+        "sku": "BAYFTAH26M",
+        "notes": "Replace every 3-6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=BAYFTAH26M"
+      },
+      {
+        "name": "Humidifier pad",
+        "type": "filter",
+        "sku": "HC26E1004",
+        "notes": "Replace each heating season.",
+        "purchase_url": "https://www.amazon.com/s?k=HC26E1004"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-RF23J9011SR",
+    "brand": "Samsung",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "HAF-CIN/EXP",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=HAF-CIN%2FEXP"
+      },
+      {
+        "name": "Refrigerator air filter",
+        "type": "filter",
+        "sku": "DA97-08006C",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=DA97-08006C"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-RF28T5001SR",
+    "brand": "Samsung",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "HAF-QIN/EXP",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=HAF-QIN%2FEXP"
+      },
+      {
+        "name": "Refrigerator air filter",
+        "type": "filter",
+        "sku": "DA97-08006C",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=DA97-08006C"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-WF45T6000AW",
+    "brand": "Samsung",
+    "category": "washer",
+    "consumables": [
+      {
+        "name": "Washer drain pump filter",
+        "type": "filter",
+        "sku": "DC97-17345",
+        "notes": "Clean every 1-3 months; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=DC97-17345"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-DVE50R5400V",
+    "brand": "Samsung",
+    "category": "dryer",
+    "consumables": [
+      {
+        "name": "Dryer lint screen",
+        "type": "filter",
+        "sku": "DC97-16742A",
+        "notes": "Clean after each cycle; replace if torn.",
+        "purchase_url": "https://www.amazon.com/s?k=DC97-16742A"
+      },
+      {
+        "name": "Drum light bulb",
+        "type": "bulb",
+        "sku": "6009-001526",
+        "purchase_url": "https://www.amazon.com/s?k=6009-001526"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-ME21M706BAS",
+    "brand": "Samsung",
+    "category": "microwave",
+    "consumables": [
+      {
+        "name": "Charcoal filter",
+        "type": "filter",
+        "sku": "DE63-00367D",
+        "notes": "Replace every 6 months for over-the-range use.",
+        "purchase_url": "https://www.amazon.com/s?k=DE63-00367D"
+      },
+      {
+        "name": "Grease filter",
+        "type": "filter",
+        "sku": "DE63-00660A",
+        "notes": "Replace when visibly worn or damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=DE63-00660A"
+      },
+      {
+        "name": "Cooktop light bulb",
+        "type": "bulb",
+        "sku": "DE07-00130A",
+        "purchase_url": "https://www.amazon.com/s?k=DE07-00130A"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-NE63T8511SS",
+    "brand": "Samsung",
+    "category": "stove",
+    "consumables": [
+      {
+        "name": "Oven light bulb",
+        "type": "bulb",
+        "sku": "40A15",
+        "purchase_url": "https://www.amazon.com/s?k=40A15+appliance+bulb"
+      }
+    ]
+  },
+  {
+    "model": "SAMSUNG-DW80R5061US",
+    "brand": "Samsung",
+    "category": "dishwasher",
+    "consumables": [
+      {
+        "name": "Dishwasher filter assembly",
+        "type": "filter",
+        "sku": "DD82-01373A",
+        "notes": "Inspect monthly; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=DD82-01373A"
+      },
+      {
+        "name": "Rinse aid",
+        "type": "consumable",
+        "sku": "JETDRY",
+        "notes": "Refill as needed.",
+        "purchase_url": "https://www.amazon.com/s?k=JETDRY"
+      }
+    ]
+  },
+  {
+    "model": "GE-GNE27JYMFS",
+    "brand": "GE",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "RPWFE",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=RPWFE"
+      },
+      {
+        "name": "Refrigerator air filter",
+        "type": "filter",
+        "sku": "WR14X29060",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=WR14X29060"
+      }
+    ]
+  },
+  {
+    "model": "GE-GTW500ASNWS",
+    "brand": "GE",
+    "category": "washer",
+    "consumables": [
+      {
+        "name": "Inlet screen filter",
+        "type": "filter",
+        "sku": "WH13X26535",
+        "notes": "Clean periodically; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=WH13X26535"
+      },
+      {
+        "name": "Drain pump",
+        "type": "pump",
+        "sku": "WH23X28418",
+        "notes": "Replace if noisy or not draining.",
+        "purchase_url": "https://www.amazon.com/s?k=WH23X28418"
+      }
+    ]
+  },
+  {
+    "model": "GE-GTD45EASJWS",
+    "brand": "GE",
+    "category": "dryer",
+    "consumables": [
+      {
+        "name": "Dryer lint filter",
+        "type": "filter",
+        "sku": "WE03X23881",
+        "notes": "Clean after each cycle; replace if torn.",
+        "purchase_url": "https://www.amazon.com/s?k=WE03X23881"
+      },
+      {
+        "name": "Drum light bulb",
+        "type": "bulb",
+        "sku": "WE05X20431",
+        "purchase_url": "https://www.amazon.com/s?k=WE05X20431"
+      }
+    ]
+  },
+  {
+    "model": "GE-GDT645SYNFS",
+    "brand": "GE",
+    "category": "dishwasher",
+    "consumables": [
+      {
+        "name": "Dishwasher filter assembly",
+        "type": "filter",
+        "sku": "WD12X26146",
+        "notes": "Inspect monthly; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=WD12X26146"
+      },
+      {
+        "name": "Rinse aid",
+        "type": "consumable",
+        "sku": "JETDRY",
+        "notes": "Refill as needed.",
+        "purchase_url": "https://www.amazon.com/s?k=JETDRY"
+      }
+    ]
+  },
+  {
+    "model": "KITCHENAID-KRFC300ESS",
+    "brand": "KitchenAid",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "EDR4RXD1",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=EDR4RXD1"
+      },
+      {
+        "name": "FreshFlow air filter",
+        "type": "filter",
+        "sku": "W10311524",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=W10311524"
+      }
+    ]
+  },
+  {
+    "model": "KITCHENAID-KFGG500ESS",
+    "brand": "KitchenAid",
+    "category": "stove",
+    "consumables": [
+      {
+        "name": "Oven light bulb",
+        "type": "bulb",
+        "sku": "40A15",
+        "purchase_url": "https://www.amazon.com/s?k=40A15+appliance+bulb"
+      }
+    ]
+  },
+  {
+    "model": "KITCHENAID-KHMS2056SSS",
+    "brand": "KitchenAid",
+    "category": "microwave",
+    "consumables": [
+      {
+        "name": "Charcoal filter",
+        "type": "filter",
+        "sku": "W10208631A",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=W10208631A"
+      }
+    ]
+  },
+  {
+    "model": "BOSCH-B36CL80ENS",
+    "brand": "Bosch",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "BORPLFTR50",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=BORPLFTR50"
+      }
+    ]
+  },
+  {
+    "model": "BOSCH-SHP865WD5N",
+    "brand": "Bosch",
+    "category": "dishwasher",
+    "consumables": [
+      {
+        "name": "Dishwasher filter",
+        "type": "filter",
+        "sku": "00645038",
+        "notes": "Inspect monthly; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=00645038"
+      },
+      {
+        "name": "Rinse aid",
+        "type": "consumable",
+        "sku": "JETDRY",
+        "notes": "Refill as needed.",
+        "purchase_url": "https://www.amazon.com/s?k=JETDRY"
+      }
+    ]
+  },
+  {
+    "model": "WHIRLPOOL-WRS325SDHZ",
+    "brand": "Whirlpool",
+    "category": "refrigerator",
+    "consumables": [
+      {
+        "name": "Water filter",
+        "type": "filter",
+        "sku": "EDR1RXD1",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=EDR1RXD1"
+      },
+      {
+        "name": "FreshFlow air filter",
+        "type": "filter",
+        "sku": "W10311524",
+        "notes": "Replace every 6 months.",
+        "purchase_url": "https://www.amazon.com/s?k=W10311524"
+      }
+    ]
+  },
+  {
+    "model": "WHIRLPOOL-WTW5000DW",
+    "brand": "Whirlpool",
+    "category": "washer",
+    "consumables": [
+      {
+        "name": "Inlet screen filter",
+        "type": "filter",
+        "sku": "W11165546",
+        "notes": "Clean periodically; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=W11165546"
+      },
+      {
+        "name": "Drain pump",
+        "type": "pump",
+        "sku": "W10876600",
+        "purchase_url": "https://www.amazon.com/s?k=W10876600"
+      }
+    ]
+  },
+  {
+    "model": "WHIRLPOOL-WED5100HW",
+    "brand": "Whirlpool",
+    "category": "dryer",
+    "consumables": [
+      {
+        "name": "Dryer lint screen",
+        "type": "filter",
+        "sku": "W10610880",
+        "notes": "Clean after each cycle; replace if torn.",
+        "purchase_url": "https://www.amazon.com/s?k=W10610880"
+      },
+      {
+        "name": "Drum light bulb",
+        "type": "bulb",
+        "sku": "4393681",
+        "purchase_url": "https://www.amazon.com/s?k=4393681"
+      }
+    ]
+  },
+  {
+    "model": "WHIRLPOOL-WDT750SAKZ",
+    "brand": "Whirlpool",
+    "category": "dishwasher",
+    "consumables": [
+      {
+        "name": "Dishwasher filter",
+        "type": "filter",
+        "sku": "W11459724",
+        "notes": "Inspect monthly; replace if damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=W11459724"
+      },
+      {
+        "name": "Rinse aid",
+        "type": "consumable",
+        "sku": "JETDRY",
+        "purchase_url": "https://www.amazon.com/s?k=JETDRY"
+      }
+    ]
+  },
+  {
+    "model": "WHIRLPOOL-WMH32519HZ",
+    "brand": "Whirlpool",
+    "category": "microwave",
+    "consumables": [
+      {
+        "name": "Charcoal filter",
+        "type": "filter",
+        "sku": "W10693025",
+        "notes": "Replace every 6-12 months.",
+        "purchase_url": "https://www.amazon.com/s?k=W10693025"
+      },
+      {
+        "name": "Grease filter",
+        "type": "filter",
+        "sku": "W10208631A",
+        "notes": "Replace when visibly worn or damaged.",
+        "purchase_url": "https://www.amazon.com/s?k=W10208631A"
+      }
+    ]
+  }
+]

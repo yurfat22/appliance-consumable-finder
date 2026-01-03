@@ -1,0 +1,12 @@
+{
+  "name": "home-model-search-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simple Node.js UI for appliance model consumable lookup",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.3"
+  }
+}

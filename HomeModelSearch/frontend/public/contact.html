@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact a Local Pro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Contact a Local Professional</h1>
+      <p>Share your details and a pro will reach out to schedule the install.</p>
+      <a class="cta" href="index.html">← Back to search</a>
+    </header>
+
+    <main>
+      <section id="pro-card" class="pro-card">
+        <div class="pro-photo">
+          <img id="pro-photo" alt="Local professional headshot" />
+        </div>
+        <div class="pro-details">
+          <h2 id="pro-name"></h2>
+          <p id="pro-company"></p>
+          <p id="pro-bio" class="muted"></p>
+          <div class="pro-meta">
+            <div><strong>Phone:</strong> <span id="pro-phone"></span></div>
+            <div><strong>Email:</strong> <span id="pro-email"></span></div>
+            <div><strong>Service area:</strong> <span id="pro-area"></span></div>
+            <div><strong>License:</strong> <span id="pro-license"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <form id="contact-form" class="stacked-form">
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" required />
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
+
+        <label for="phone">Phone (optional)</label>
+        <input id="phone" name="phone" type="tel" />
+
+        <label for="zip">ZIP code (optional)</label>
+        <input id="zip" name="zip" type="text" />
+
+        <label for="category">Appliance type</label>
+        <select id="category" name="category" required>
+          <option value="">Select one</option>
+          <option value="refrigerator">Refrigerator</option>
+          <option value="freezer">Freezer</option>
+          <option value="washer">Washer</option>
+          <option value="dryer">Dryer</option>
+          <option value="microwave">Microwave</option>
+          <option value="stove">Stove/Range</option>
+          <option value="dishwasher">Dishwasher</option>
+          <option value="hvac">HVAC</option>
+        </select>
+
+        <label for="model">Model number (optional)</label>
+        <input id="model" name="model" type="text" />
+
+        <label for="preferred">Preferred time (optional)</label>
+        <input id="preferred" name="preferred" type="text" placeholder="e.g., Weekdays after 5pm" />
+
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="4" placeholder="Any extra details to share"></textarea>
+
+        <button type="submit">Send request</button>
+      </form>
+
+      <div id="contact-status" class="status" aria-live="polite"></div>
+    </main>
+
+    <script src="/config.js"></script>
+    <script src="contact.js"></script>
+  </body>
+</html>
