@@ -9,9 +9,11 @@ Find appliance consumables (filters, bulbs, etc.) by model number and browse by 
   - `data/contractor.json` - contractor profile (name/company/phone/email/etc., `photo` should point to `/assets/contractor.jpg`).
   - `image/` - static assets for the backend (e.g., `contractor.jpg`).
   - `requirements.txt` - Python dependencies.
+  - `tools/import_appliances.py` - CSV -> JSON ingest tool.
 - `frontend/` - Node/Express UI
   - `public/` - static HTML/CSS/JS
   - `server.js` - serves static assets and `/config.js` (injects `API_BASE_URL`).
+- `docker-compose.yml` - local/prod container orchestration.
 
 ## Setup
 ### Backend
@@ -30,6 +32,15 @@ npm install
 npm start
 ```
 Open `http://localhost:3000`.
+
+## Deployment (Docker Compose)
+- Build and run both services:
+```powershell
+cd <repo-root>
+docker compose up --build
+```
+- Frontend will be on `http://localhost:3000`, backend on `http://localhost:8000`.
+- To point at a domain later, set `API_BASE_URL` on the frontend service (e.g., `API_BASE_URL=https://api.yourdomain.com`) and expose/route 3000/8000 via your reverse proxy or hosting platform. Add TLS via your host (e.g., managed certs or Let’s Encrypt) and map `A`/`CNAME` records accordingly.
 
 ## Usage
 - Search by model: uses `/api/consumables?model=...` (case-insensitive substring match).
