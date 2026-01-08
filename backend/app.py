@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
@@ -41,6 +41,7 @@ class Contractor(BaseModel):
 DATA_PATH = Path(__file__).parent / "data" / "appliances.json"
 CONTRACTOR_PATH = Path(__file__).parent / "data" / "contractor.json"
 IMAGE_DIR = Path(__file__).parent / "image"
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend" / "public"
 
 app = FastAPI(title="Appliance Consumables API")
 
@@ -148,6 +149,19 @@ def submit_contact(request: ContactRequest) -> dict:
     # In a real app this would enqueue to a CRM/email/SMS. For now we log it.
     print("Contact request received:", request.model_dump())
     return {"status": "received", "message": "A local pro will reach out soon."}
+
+
+@app.get("/config.js")
+def config(request: Request) -> Response:
+    base_url = str(request.base_url).rstrip("/")
+    return Response(
+        f'window.API_BASE_URL = "{base_url}";',
+        media_type="application/javascript",
+    )
+
+
+if FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
 
 if __name__ == "__main__":
