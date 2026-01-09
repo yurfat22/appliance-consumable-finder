@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from psycopg_pool import ConnectionPool
+from dotenv import load_dotenv
 
 class Consumable(BaseModel):
     name: str
@@ -39,6 +40,8 @@ class Contractor(BaseModel):
     photo: Optional[str] = None
     bio: Optional[str] = None
 
+
+load_dotenv(Path(__file__).parent / ".env")
 
 DATA_PATH = Path(__file__).parent / "data" / "appliances.json"
 CONTRACTOR_PATH = Path(__file__).parent / "data" / "contractor.json"
