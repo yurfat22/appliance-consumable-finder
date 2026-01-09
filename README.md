@@ -40,10 +40,10 @@ cd <repo-root>
 docker compose up --build
 ```
 - Frontend will be on `http://localhost:3000`, backend on `http://localhost:8000`.
-- To point at a domain later, set `API_BASE_URL` on the frontend service (e.g., `API_BASE_URL=https://api.yourdomain.com`) and expose/route 3000/8000 via your reverse proxy or hosting platform. Add TLS via your host (e.g., managed certs or Let’s Encrypt) and map `A`/`CNAME` records accordingly.
+- To point at a domain later, set `API_BASE_URL` on the frontend service (e.g., `API_BASE_URL=https://api.yourdomain.com`) and expose/route 3000/8000 via your reverse proxy or hosting platform. Add TLS via your host (e.g., managed certs or Letâ€™s Encrypt) and map `A`/`CNAME` records accordingly.
 
 ## Usage
-- Search by model: uses `/api/consumables?model=...` (case-insensitive substring match).
+- Search by model: uses `/api/consumables'model=...` (case-insensitive substring match).
 - Browse by category: `/api/categories` groups by appliance category and brand (with an "All" group).
 - Contact a pro: form posts to `/api/contact`; data is currently logged server-side.
 - Contractor info: `/api/contractor` reads `data/contractor.json` on each request; images served from `/assets/*`.
@@ -58,9 +58,29 @@ docker compose up --build
   ```
   It will regenerate `backend/data/appliances.json`. Use `-i`/`-o` to override input/output paths.
 
+
+## Supabase (Postgres) setup
+The backend can use Supabase/Postgres when `DATABASE_URL` is set. It falls back to JSON when unset.
+
+1) Create a Supabase project and open the SQL editor.
+2) Run the schema in `backend/db/schema.sql`.
+3) Load data from JSON into Supabase:
+```powershell
+cd <repo-root>
+$env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/postgres?sslmode=require"
+py backend/tools/load_supabase.py
+```
+4) Run the backend using Supabase:
+```powershell
+$env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/postgres?sslmode=require"
+uvicorn backend.app:app --host 0.0.0.0 --port 8000
+```
+
+To reset and reload tables, use `py backend/tools/load_supabase.py --truncate`.
+
 ## Running tests
 No automated tests included. To validate manually:
-- Hit `/health`, `/api/consumables?model=...`, `/api/categories`, `/api/contractor`.
+- Hit `/health`, `/api/consumables'model=...`, `/api/categories`, `/api/contractor`.
 - Load `http://localhost:3000` to exercise search/browse/contact flows.
 
 ## Future ideas
