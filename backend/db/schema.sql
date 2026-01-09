@@ -37,3 +37,15 @@ CREATE TABLE IF NOT EXISTS model_consumables (
 CREATE INDEX IF NOT EXISTS idx_model_consumables_model_id
   ON model_consumables (model_id);
 
+CREATE TABLE IF NOT EXISTS contractors (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  company TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT NOT NULL,
+  service_area TEXT,
+  license TEXT,
+  photo TEXT,
+  bio TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

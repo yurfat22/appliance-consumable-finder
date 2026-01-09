@@ -1,4 +1,3 @@
-import json
 import os
 from pathlib import Path
 from typing import List, Optional
@@ -43,12 +42,9 @@ class Contractor(BaseModel):
 
 load_dotenv(Path(__file__).parent / ".env")
 
-DATA_PATH = Path(__file__).parent / "data" / "appliances.json"
-CONTRACTOR_PATH = Path(__file__).parent / "data" / "contractor.json"
 IMAGE_DIR = Path(__file__).parent / "image"
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend" / "public"
 DATABASE_URL = os.getenv("DATABASE_URL")
-USE_DB = bool(DATABASE_URL)
 DB_POOL: Optional[ConnectionPool] = None
 
 app = FastAPI(title="Appliance Consumables API")
@@ -63,30 +59,6 @@ app.add_middleware(
 
 # Serve static assets (e.g., contractor photos) from /assets/*
 app.mount("/assets", StaticFiles(directory=IMAGE_DIR), name="assets")
-
-
-def load_data() -> List[Appliance]:
-    if not DATA_PATH.exists():
-        raise RuntimeError(f"Data file not found: {DATA_PATH}")
-
-    with DATA_PATH.open("r", encoding="utf-8") as f:
-        raw = json.load(f)
-
-    return [Appliance(**item) for item in raw]
-
-
-def load_contractor() -> Contractor:
-    if not CONTRACTOR_PATH.exists():
-        raise RuntimeError(f"Contractor file not found: {CONTRACTOR_PATH}")
-
-    with CONTRACTOR_PATH.open("r", encoding="utf-8") as f:
-        raw = json.load(f)
-
-    return Contractor(**raw)
-
-
-APPLIANCES: List[Appliance] = [] if USE_DB else load_data()
-CONTRACTOR: Contractor = load_contractor()
 
 
 class CategoryGroup(BaseModel):
@@ -113,9 +85,10 @@ def health() -> dict:
 @app.on_event("startup")
 def startup() -> None:
     global DB_POOL
-    if USE_DB and DATABASE_URL:
-        sslmode = os.getenv("PGSSLMODE", "require")
-        DB_POOL = ConnectionPool(DATABASE_URL, kwargs={"sslmode": sslmode})
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL is required to run the API.")
+    sslmode = os.getenv("PGSSLMODE", "require")
+    DB_POOL = ConnectionPool(DATABASE_URL, kwargs={"sslmode": sslmode})
 
 
 @app.on_event("shutdown")
@@ -271,14 +244,7 @@ def search(model: str = Query(..., description="Appliance model number")) -> Lis
     if not model_query:
         raise HTTPException(status_code=400, detail="Model query cannot be empty.")
 
-    if USE_DB:
-        matches = search_db(model_query)
-    else:
-        matches = [
-            appliance
-            for appliance in APPLIANCES
-            if model_query in appliance.model.lower()
-        ]
+    matches = search_db(model_query)
 
     if not matches:
         raise HTTPException(status_code=404, detail="No consumables found for that model.")
@@ -288,29 +254,37 @@ def search(model: str = Query(..., description="Appliance model number")) -> Lis
 
 @app.get("/api/categories", response_model=List[CategoryGroup])
 def list_categories() -> List[CategoryGroup]:
-    if USE_DB:
-        return list_categories_db()
-
-    categories: dict[str, dict[str, List[Appliance]]] = {}
-    for appliance in APPLIANCES:
-        cat = categories.setdefault(appliance.category, {})
-        cat.setdefault(appliance.brand, []).append(appliance)
-
-    grouped: List[CategoryGroup] = []
-    for category, brand_map in sorted(categories.items()):
-        brands = [
-            BrandGroup(brand=brand, appliances=items)
-            for brand, items in sorted(brand_map.items())
-        ]
-        grouped.append(CategoryGroup(category=category, brands=brands))
-
-    return grouped
+    return list_categories_db()
 
 
 @app.get("/api/contractor", response_model=Contractor)
 def get_contractor() -> Contractor:
-    # Reload on each request so updates to contractor.json show without a server restart.
-    return load_contractor()
+    if not DB_POOL:
+        raise RuntimeError("Database pool is not initialized.")
+
+    with DB_POOL.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT name, company, phone, email, service_area, license, photo, bio
+                FROM contractors
+                ORDER BY updated_at DESC, id DESC
+                LIMIT 1
+                """
+            )
+            row = cur.fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail="Contractor profile not found.")
+            return Contractor(
+                name=row[0],
+                company=row[1],
+                phone=row[2],
+                email=row[3],
+                service_area=row[4],
+                license=row[5],
+                photo=row[6],
+                bio=row[7],
+            )
 
 
 @app.post("/api/contact")

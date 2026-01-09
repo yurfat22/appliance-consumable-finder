@@ -38,3 +38,7 @@ coverage/
 htmlcov/
 coverage.xml
 
+# Data exports
+backend/data/*.json
+backend/exports/
+

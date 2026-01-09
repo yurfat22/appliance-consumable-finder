@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path(__file__).resolve().parent.parent / "data" / "ge_models.json",
+        default=Path(__file__).resolve().parent.parent / "exports" / "ge_models.json",
         help="Output JSON path.",
     )
     return parser.parse_args()

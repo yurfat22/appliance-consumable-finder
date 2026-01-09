@@ -21,8 +21,8 @@ def parse_args() -> argparse.Namespace:
         "--output",
         "-o",
         type=Path,
-        default=Path(__file__).resolve().parent.parent / "data" / "appliances.json",
-        help="Path to write the JSON output (default: backend/data/appliances.json).",
+        default=Path(__file__).resolve().parent.parent / "exports" / "appliances.json",
+        help="Path to write the JSON output (default: backend/exports/appliances.json).",
     )
     return parser.parse_args()
 
