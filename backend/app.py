@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 class Consumable(BaseModel):
     name: str
     type: str
+    asin: Optional[str] = None
     sku: str
     notes: Optional[str] = None
     purchase_url: Optional[str] = None
@@ -136,7 +137,7 @@ def search_db(model_query: str) -> List[Appliance]:
 
             cur.execute(
                 """
-                SELECT mc.model_id, c.name, c.type, c.sku, mc.notes, c.purchase_url
+                SELECT mc.model_id, c.name, c.type, c.asin, c.sku, mc.notes, c.purchase_url
                 FROM model_consumables mc
                 JOIN consumables c ON mc.consumable_id = c.id
                 WHERE mc.model_id = ANY(%s)
@@ -153,9 +154,10 @@ def search_db(model_query: str) -> List[Appliance]:
                     Consumable(
                         name=row[1],
                         type=row[2],
-                        sku=row[3],
-                        notes=row[4],
-                        purchase_url=row[5],
+                        asin=row[3],
+                        sku=row[4],
+                        notes=row[5],
+                        purchase_url=row[6],
                     )
                 )
 
@@ -199,7 +201,7 @@ def list_categories_db() -> List[CategoryGroup]:
 
             cur.execute(
                 """
-                SELECT mc.model_id, c.name, c.type, c.sku, mc.notes, c.purchase_url
+                SELECT mc.model_id, c.name, c.type, c.asin, c.sku, mc.notes, c.purchase_url
                 FROM model_consumables mc
                 JOIN consumables c ON mc.consumable_id = c.id
                 WHERE mc.model_id = ANY(%s)
@@ -216,9 +218,10 @@ def list_categories_db() -> List[CategoryGroup]:
                     Consumable(
                         name=row[1],
                         type=row[2],
-                        sku=row[3],
-                        notes=row[4],
-                        purchase_url=row[5],
+                        asin=row[3],
+                        sku=row[4],
+                        notes=row[5],
+                        purchase_url=row[6],
                     )
                 )
 

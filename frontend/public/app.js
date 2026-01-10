@@ -30,7 +30,10 @@ const renderResults = (appliances) => {
 
       const meta = document.createElement("div");
       meta.className = "meta";
-      meta.innerHTML = `<span class="tag">${item.type}</span><span>${item.name} (SKU: ${item.sku})</span>`;
+      const skuLabel = item.sku ? `SKU: ${item.sku}` : "SKU: N/A";
+      const asinLabel = item.asin ? `ASIN: ${item.asin}` : "";
+      const idLabel = asinLabel ? `${skuLabel} · ${asinLabel}` : skuLabel;
+      meta.innerHTML = `<span class="tag">${item.type}</span><span>${item.name} (${idLabel})</span>`;
       entry.appendChild(meta);
 
       if (item.notes) {

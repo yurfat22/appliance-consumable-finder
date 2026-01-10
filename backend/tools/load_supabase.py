@@ -70,7 +70,14 @@ def normalize_key(value: Optional[str]) -> str:
     return (value or "").strip().lower()
 
 
+def normalize_asin(value: Optional[str]) -> str:
+    return (value or "").strip().upper()
+
+
 def build_consumable_key(row: dict) -> str:
+    asin = normalize_asin(row.get("asin") or row.get("ASIN"))
+    if asin:
+        return f"asin:{asin}"
     sku = normalize_key(row.get("sku"))
     if sku:
         return f"sku:{sku}"
@@ -102,6 +109,11 @@ def add_amazon_affiliate_tag(url: Optional[str], tag: str) -> Optional[str]:
     query_items.append(("tag", tag))
     new_query = urlencode(query_items, doseq=True)
     return urlunparse(parsed._replace(query=new_query))
+
+
+def build_amazon_product_url(asin: str, tag: str) -> str:
+    base_url = f"https://www.amazon.com/dp/{asin}"
+    return add_amazon_affiliate_tag(base_url, tag) or base_url
 
 
 def connect(dsn: str) -> psycopg.Connection:
@@ -143,13 +155,18 @@ def main() -> None:
         for consumable in item.get("consumables", []) or []:
             key = build_consumable_key(consumable)
             if key not in consumables:
-                purchase_url = add_amazon_affiliate_tag(
-                    str(consumable.get("purchase_url", "")).strip() or None,
-                    AFFILIATE_TAG,
-                )
+                asin = normalize_asin(consumable.get("asin") or consumable.get("ASIN")) or None
+                raw_url = str(consumable.get("purchase_url", "")).strip() or None
+                if raw_url:
+                    purchase_url = add_amazon_affiliate_tag(raw_url, AFFILIATE_TAG)
+                elif asin:
+                    purchase_url = build_amazon_product_url(asin, AFFILIATE_TAG)
+                else:
+                    purchase_url = None
                 consumables[key] = {
                     "name": str(consumable.get("name", "")).strip(),
                     "type": str(consumable.get("type", "")).strip(),
+                    "asin": asin,
                     "sku": str(consumable.get("sku", "")).strip() or None,
                     "purchase_url": purchase_url,
                 }
@@ -179,33 +196,66 @@ def main() -> None:
             category_map = {row[1]: row[0] for row in cur.fetchall()}
 
             consumable_rows = []
+            consumable_rows_by_sku = []
+            consumable_rows_by_asin = []
             if consumables:
-                consumable_rows = [
-                    (row["name"], row["type"], row["sku"], row["purchase_url"])
-                    for row in consumables.values()
-                    if row["name"] and row["type"]
-                ]
-                for chunk in chunked(consumable_rows, args.batch_size):
+                for row in consumables.values():
+                    if not row["name"] or not row["type"]:
+                        continue
+                    entry = (
+                        row["name"],
+                        row["type"],
+                        row["asin"],
+                        row["sku"],
+                        row["purchase_url"],
+                    )
+                    consumable_rows.append(entry)
+                    if row["sku"]:
+                        consumable_rows_by_sku.append(entry)
+                    elif row["asin"]:
+                        consumable_rows_by_asin.append(entry)
+                    else:
+                        consumable_rows_by_sku.append(entry)
+
+                for chunk in chunked(consumable_rows_by_sku, args.batch_size):
                     cur.executemany(
                         """
-                        INSERT INTO consumables (name, type, sku, purchase_url)
-                        VALUES (%s, %s, %s, %s)
+                        INSERT INTO consumables (name, type, asin, sku, purchase_url)
+                        VALUES (%s, %s, %s, %s, %s)
                         ON CONFLICT (sku) DO UPDATE SET
                             name = EXCLUDED.name,
                             type = EXCLUDED.type,
+                            asin = COALESCE(EXCLUDED.asin, consumables.asin),
                             purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url)
                         """,
                         chunk,
                     )
 
-            cur.execute("SELECT id, sku, name, type FROM consumables")
+                for chunk in chunked(consumable_rows_by_asin, args.batch_size):
+                    cur.executemany(
+                        """
+                        INSERT INTO consumables (name, type, asin, sku, purchase_url)
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON CONFLICT (asin) DO UPDATE SET
+                            name = EXCLUDED.name,
+                            type = EXCLUDED.type,
+                            sku = COALESCE(EXCLUDED.sku, consumables.sku),
+                            purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url)
+                        """,
+                        chunk,
+                    )
+
+            cur.execute("SELECT id, asin, sku, name, type FROM consumables")
             consumable_map: Dict[str, int] = {}
             for row in cur.fetchall():
-                sku = normalize_key(row[1])
-                if sku:
+                asin = normalize_asin(row[1])
+                sku = normalize_key(row[2])
+                if asin:
+                    key = f"asin:{asin}"
+                elif sku:
                     key = f"sku:{sku}"
                 else:
-                    key = f"name:{normalize_key(row[2])}|type:{normalize_key(row[3])}"
+                    key = f"name:{normalize_key(row[3])}|type:{normalize_key(row[4])}"
                 consumable_map.setdefault(key, row[0])
 
             model_rows: List[Tuple[int, int, str]] = []

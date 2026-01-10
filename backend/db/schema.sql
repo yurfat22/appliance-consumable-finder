@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS consumables (
   id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   type TEXT NOT NULL,
+  asin TEXT UNIQUE,
   sku TEXT UNIQUE,
   purchase_url TEXT
 );
