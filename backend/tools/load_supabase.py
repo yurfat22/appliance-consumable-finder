@@ -3,8 +3,11 @@ import json
 import os
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple
+from urllib.parse import parse_qsl, urlparse, urlunparse, urlencode
 
 import psycopg
+
+AFFILIATE_TAG = os.getenv("AMAZON_ASSOCIATE_TAG", "be3857-20")
 
 
 def parse_args() -> argparse.Namespace:
@@ -76,6 +79,31 @@ def build_consumable_key(row: dict) -> str:
     return f"name:{name}|type:{ctype}"
 
 
+def add_amazon_affiliate_tag(url: Optional[str], tag: str) -> Optional[str]:
+    if not url:
+        return url
+    cleaned = url.strip()
+    if not cleaned:
+        return None
+    try:
+        parsed = urlparse(cleaned)
+    except ValueError:
+        return cleaned
+    if parsed.scheme not in ("http", "https"):
+        return cleaned
+    netloc = parsed.netloc.lower()
+    if "amazon." not in netloc:
+        return cleaned
+    query_items = [
+        (key, value)
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+        if key.lower() != "tag"
+    ]
+    query_items.append(("tag", tag))
+    new_query = urlencode(query_items, doseq=True)
+    return urlunparse(parsed._replace(query=new_query))
+
+
 def connect(dsn: str) -> psycopg.Connection:
     sslmode = os.getenv("PGSSLMODE", "require")
     return psycopg.connect(dsn, sslmode=sslmode)
@@ -115,11 +143,15 @@ def main() -> None:
         for consumable in item.get("consumables", []) or []:
             key = build_consumable_key(consumable)
             if key not in consumables:
+                purchase_url = add_amazon_affiliate_tag(
+                    str(consumable.get("purchase_url", "")).strip() or None,
+                    AFFILIATE_TAG,
+                )
                 consumables[key] = {
                     "name": str(consumable.get("name", "")).strip(),
                     "type": str(consumable.get("type", "")).strip(),
                     "sku": str(consumable.get("sku", "")).strip() or None,
-                    "purchase_url": str(consumable.get("purchase_url", "")).strip() or None,
+                    "purchase_url": purchase_url,
                 }
 
     with connect(args.database_url) as conn:
@@ -161,7 +193,7 @@ def main() -> None:
                         ON CONFLICT (sku) DO UPDATE SET
                             name = EXCLUDED.name,
                             type = EXCLUDED.type,
-                            purchase_url = COALESCE(consumables.purchase_url, EXCLUDED.purchase_url)
+                            purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url)
                         """,
                         chunk,
                     )
