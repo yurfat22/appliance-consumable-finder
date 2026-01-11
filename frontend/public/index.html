@@ -9,37 +9,50 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header>
-      <nav class="site-nav" aria-label="Primary">
-        <a class="nav-link active" href="index.html" aria-current="page">Search</a>
-        <a class="nav-link" href="browse.html">Browse</a>
-      </nav>
-      <div class="brand">
-        <img
-          class="brand-logo"
-          src="images/HomePartsFinder_Header_compact.png"
-          alt="HomePartsFinder"
-        />
+    <div class="top-ribbon">
+      <div class="top-inner">
+        <a class="brand-link" href="index.html">
+          <img
+            class="brand-logo"
+            src="images/HomePartsFinder_Logo.png"
+            alt="HomePartsFinder"
+          />
+        </a>
+        <div class="brand-strategy">
+          We help homeowners quickly find compatible parts with verified fit and clear guidance.
+        </div>
+        <div class="top-actions">
+          <div class="utility-links">
+          </div>
+        </div>
       </div>
-      <h1>Appliance Consumable Finder</h1>
-      <p>Enter a model number to see its filters and other consumables.</p>
-    </header>
-
-    <main>
-      <form id="search-form">
-        <label for="model">Model number</label>
-        <div class="input-row">
+    </div>
+    <div class="primary-ribbon">
+      <div class="primary-inner">
+        <nav class="nav-links" aria-label="Primary">
+          <a class="nav-link active" href="index.html" aria-current="page">Search</a>
+          <a class="nav-link" href="browse.html">Browse</a>
+          <a class="nav-link" href="blog.html">Blog</a>
+          <a class="nav-link" href="technical.html">Technical Info</a>
+          <a class="nav-link" href="contact.html">Contact Us</a>
+        </nav>
+        <form id="search-form" class="nav-search">
           <input
             id="model"
             name="model"
-            type="text"
-            placeholder="e.g., LG-WM4000HWA"
+            type="search"
+            placeholder="Search model or part number"
+            aria-label="Search model or part number"
             required
           />
           <button type="submit">Search</button>
-        </div>
-      </form>
+        </form>
+      </div>
+    </div>
+    <header>
+    </header>
 
+    <main>
       <section id="results"></section>
 
     </main>

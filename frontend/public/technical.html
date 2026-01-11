@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Browse Categories</title>
+    <title>Technical Information</title>
     <link rel="icon" type="image/jpeg" href="images/HomePartsFinder_AppIcon.jpg" />
     <link rel="apple-touch-icon" href="images/HomePartsFinder_AppIcon.jpg" />
     <link rel="stylesheet" href="styles.css" />
@@ -31,25 +31,38 @@
       <div class="primary-inner">
         <nav class="nav-links" aria-label="Primary">
           <a class="nav-link" href="index.html">Search</a>
-          <a class="nav-link active" href="browse.html" aria-current="page">Browse</a>
+          <a class="nav-link" href="browse.html">Browse</a>
           <a class="nav-link" href="blog.html">Blog</a>
-          <a class="nav-link" href="technical.html">Technical Info</a>
+          <a class="nav-link active" href="technical.html" aria-current="page">Technical Info</a>
           <a class="nav-link" href="contact.html">Contact Us</a>
         </nav>
       </div>
     </div>
+
     <header>
-      <h1>Browse by Category</h1>
-      <p>Explore all appliance types and their consumables.</p>
+      <h1>Technical Information</h1>
+      <p>Specs, compatibility notes, and model number guidance.</p>
     </header>
 
     <main>
-      <section id="browse-section">
-        <div id="browse"></div>
+      <section class="card">
+        <h3>Model Number Locations</h3>
+        <p class="muted">
+          Most refrigerators list the model inside the fresh food compartment near the crisper.
+        </p>
+      </section>
+      <section class="card">
+        <h3>Filter Compatibility</h3>
+        <p class="muted">
+          Check the appliance brand, model number, and filter code to confirm a match.
+        </p>
+      </section>
+      <section class="card">
+        <h3>Installation Notes</h3>
+        <p class="muted">
+          Always flush new water filters for 2 to 3 minutes before normal use.
+        </p>
       </section>
     </main>
-
-    <script src="/config.js"></script>
-    <script src="browse.js"></script>
   </body>
 </html>
