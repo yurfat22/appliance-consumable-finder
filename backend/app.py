@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import List, Optional
+from urllib.parse import parse_qsl, quote_plus, urlencode, urlparse, urlunparse
 
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,6 +47,7 @@ load_dotenv(Path(__file__).parent / ".env")
 IMAGE_DIR = Path(__file__).parent / "image"
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend" / "public"
 DATABASE_URL = os.getenv("DATABASE_URL")
+AFFILIATE_TAG = os.getenv("AMAZON_ASSOCIATE_TAG", "be3857-20")
 DB_POOL: Optional[ConnectionPool] = None
 
 app = FastAPI(title="Appliance Consumables API")
@@ -76,6 +78,52 @@ class ContactRequest(BaseModel):
     model: Optional[str] = None
     preferred_time: Optional[str] = None
     notes: Optional[str] = None
+
+
+def add_amazon_affiliate_tag(url: Optional[str], tag: str) -> Optional[str]:
+    if not url:
+        return url
+    cleaned = url.strip()
+    if not cleaned:
+        return None
+    try:
+        parsed = urlparse(cleaned)
+    except ValueError:
+        return cleaned
+    if parsed.scheme not in ("http", "https"):
+        return cleaned
+    netloc = parsed.netloc.lower()
+    if "amazon." not in netloc:
+        return cleaned
+    query_items = [
+        (key, value)
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+        if key.lower() != "tag"
+    ]
+    query_items.append(("tag", tag))
+    new_query = urlencode(query_items, doseq=True)
+    return urlunparse(parsed._replace(query=new_query))
+
+
+def build_amazon_product_url(asin: str, tag: str) -> str:
+    base_url = f"https://www.amazon.com/dp/{asin}"
+    return add_amazon_affiliate_tag(base_url, tag) or base_url
+
+
+def build_amazon_search_url(sku: str, tag: str) -> str:
+    base_url = f"https://www.amazon.com/s?k={quote_plus(sku)}"
+    return add_amazon_affiliate_tag(base_url, tag) or base_url
+
+
+def apply_affiliate_links(appliances: List[Appliance]) -> None:
+    for appliance in appliances:
+        for item in appliance.consumables:
+            if item.purchase_url:
+                item.purchase_url = add_amazon_affiliate_tag(item.purchase_url, AFFILIATE_TAG)
+            elif item.asin:
+                item.purchase_url = build_amazon_product_url(item.asin, AFFILIATE_TAG)
+            elif item.sku:
+                item.purchase_url = build_amazon_search_url(item.sku, AFFILIATE_TAG)
 
 
 @app.get("/health")
@@ -111,6 +159,7 @@ def search_db(model_query: str) -> List[Appliance]:
                 JOIN brands b ON m.brand_id = b.id
                 JOIN categories c ON m.category_id = c.id
                 WHERE LOWER(m.model_number) LIKE %s
+                  AND COALESCE(m.water_filter_missing, false) = false
                 ORDER BY b.name, m.model_number
                 """,
                 (f"%{model_query.lower()}%",),
@@ -161,6 +210,7 @@ def search_db(model_query: str) -> List[Appliance]:
                     )
                 )
 
+            apply_affiliate_links(appliances)
             return appliances
 
 
@@ -176,6 +226,7 @@ def list_categories_db() -> List[CategoryGroup]:
                 FROM models m
                 JOIN brands b ON m.brand_id = b.id
                 JOIN categories c ON m.category_id = c.id
+                WHERE COALESCE(m.water_filter_missing, false) = false
                 ORDER BY c.name, b.name, m.model_number
                 """
             )
@@ -225,6 +276,7 @@ def list_categories_db() -> List[CategoryGroup]:
                     )
                 )
 
+    apply_affiliate_links(appliances)
     categories: dict[str, dict[str, List[Appliance]]] = {}
     for appliance in appliances:
         cat = categories.setdefault(appliance.category, {})

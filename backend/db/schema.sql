@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS models (
   brand_id BIGINT NOT NULL REFERENCES brands(id),
   category_id BIGINT NOT NULL REFERENCES categories(id),
   model_number TEXT NOT NULL,
+  water_filter_missing BOOLEAN NOT NULL DEFAULT FALSE,
   UNIQUE (brand_id, category_id, model_number)
 );
 
