@@ -42,6 +42,12 @@ class Contractor(BaseModel):
     bio: Optional[str] = None
 
 
+class Suggestion(BaseModel):
+    model_number: str
+    brand: str
+    category: str
+
+
 load_dotenv(Path(__file__).parent / ".env")
 
 IMAGE_DIR = Path(__file__).parent / "image"
@@ -214,6 +220,59 @@ def search_db(model_query: str) -> List[Appliance]:
             return appliances
 
 
+def get_suggestions_db(query: str, limit: int) -> List[Suggestion]:
+    """Fetch autocomplete suggestions using prefix + trigram similarity matching."""
+    if not DB_POOL:
+        raise RuntimeError("Database pool is not initialized.")
+
+    with DB_POOL.connection() as conn:
+        with conn.cursor() as cur:
+            # Combined query: prioritizes prefix > contains > trigram similarity
+            cur.execute(
+                """
+                WITH scored_models AS (
+                    SELECT DISTINCT ON (m.model_number)
+                        m.model_number,
+                        b.name AS brand,
+                        c.name AS category,
+                        CASE
+                            WHEN LOWER(m.model_number) LIKE %s THEN 1.0
+                            WHEN LOWER(m.model_number) LIKE %s THEN 0.8
+                            ELSE SIMILARITY(LOWER(m.model_number), %s)
+                        END AS score
+                    FROM models m
+                    JOIN brands b ON m.brand_id = b.id
+                    JOIN categories c ON m.category_id = c.id
+                    WHERE COALESCE(m.water_filter_missing, false) = false
+                      AND (
+                          LOWER(m.model_number) LIKE %s
+                          OR LOWER(m.model_number) LIKE %s
+                          OR SIMILARITY(LOWER(m.model_number), %s) > 0.2
+                      )
+                )
+                SELECT model_number, brand, category, score
+                FROM scored_models
+                WHERE score > 0.2
+                ORDER BY score DESC, model_number ASC
+                LIMIT %s
+                """,
+                (
+                    f"{query}%",   # prefix match (score 1.0)
+                    f"%{query}%",  # contains match (score 0.8)
+                    query,         # similarity score
+                    f"{query}%",   # WHERE prefix
+                    f"%{query}%",  # WHERE contains
+                    query,         # WHERE similarity
+                    limit,
+                ),
+            )
+
+            return [
+                Suggestion(model_number=row[0], brand=row[1], category=row[2])
+                for row in cur.fetchall()
+            ]
+
+
 def list_categories_db() -> List[CategoryGroup]:
     if not DB_POOL:
         raise RuntimeError("Database pool is not initialized.")
@@ -305,6 +364,18 @@ def search(model: str = Query(..., description="Appliance model number")) -> Lis
         raise HTTPException(status_code=404, detail="No consumables found for that model.")
 
     return matches
+
+
+@app.get("/api/suggestions", response_model=List[Suggestion])
+def suggestions(
+    q: str = Query(..., min_length=2, description="Search query"),
+    limit: int = Query(10, ge=1, le=15, description="Max suggestions"),
+) -> List[Suggestion]:
+    """Return autocomplete suggestions with fuzzy matching."""
+    query = q.strip().lower()
+    if len(query) < 2:
+        return []
+    return get_suggestions_db(query, limit)
 
 
 @app.get("/api/categories", response_model=List[CategoryGroup])

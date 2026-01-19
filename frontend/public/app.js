@@ -1,8 +1,250 @@
 const form = document.getElementById("search-form");
 const modelInput = document.getElementById("model");
 const results = document.getElementById("results");
+const suggestionsList = document.getElementById("suggestions-list");
 
 const apiBase = window.API_BASE_URL || "http://localhost:8000";
+
+// ==================== AUTOCOMPLETE ====================
+
+const DEBOUNCE_MS = 300;
+const MIN_QUERY_LENGTH = 2;
+
+class Autocomplete {
+  constructor(inputEl, listEl, onSelect) {
+    this.input = inputEl;
+    this.list = listEl;
+    this.onSelect = onSelect;
+    this.highlightedIndex = -1;
+    this.suggestions = [];
+    this.debounceTimer = null;
+    this.abortController = null;
+
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    this.input.addEventListener("input", () => this.handleInput());
+    this.input.addEventListener("keydown", (e) => this.handleKeydown(e));
+    this.input.addEventListener("blur", () => this.handleBlur());
+    this.input.addEventListener("focus", () => this.handleFocus());
+
+    document.addEventListener("click", (e) => {
+      if (!this.input.contains(e.target) && !this.list.contains(e.target)) {
+        this.hide();
+      }
+    });
+  }
+
+  handleInput() {
+    const query = this.input.value.trim();
+
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
+    if (this.abortController) this.abortController.abort();
+
+    if (query.length < MIN_QUERY_LENGTH) {
+      this.hide();
+      return;
+    }
+
+    this.showLoading();
+    this.debounceTimer = setTimeout(() => this.fetchSuggestions(query), DEBOUNCE_MS);
+  }
+
+  async fetchSuggestions(query) {
+    this.abortController = new AbortController();
+
+    try {
+      const res = await fetch(
+        `${apiBase}/api/suggestions?q=${encodeURIComponent(query)}&limit=10`,
+        { signal: this.abortController.signal }
+      );
+
+      if (!res.ok) {
+        this.hide();
+        return;
+      }
+
+      const data = await res.json();
+      this.suggestions = data || [];
+      this.renderSuggestions(query);
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error("Autocomplete error:", err);
+        this.hide();
+      }
+    }
+  }
+
+  renderSuggestions(query) {
+    this.list.innerHTML = "";
+    this.highlightedIndex = -1;
+
+    if (this.suggestions.length === 0) {
+      const noResults = document.createElement("li");
+      noResults.className = "no-results";
+      noResults.textContent = "No matching models found";
+      noResults.setAttribute("aria-disabled", "true");
+      this.list.appendChild(noResults);
+      this.show();
+      return;
+    }
+
+    this.suggestions.forEach((suggestion, index) => {
+      const li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", "false");
+      li.dataset.index = index;
+
+      const modelHtml = this.highlightMatch(suggestion.model_number, query);
+
+      li.innerHTML = `
+        <div class="suggestion-model">${modelHtml}</div>
+        <div class="suggestion-context">${suggestion.brand} - ${suggestion.category}</div>
+      `;
+
+      li.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        this.selectSuggestion(index);
+      });
+
+      li.addEventListener("mouseenter", () => {
+        this.setHighlight(index);
+      });
+
+      this.list.appendChild(li);
+    });
+
+    this.show();
+  }
+
+  highlightMatch(text, query) {
+    const lowerText = text.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+    const index = lowerText.indexOf(lowerQuery);
+
+    if (index === -1) return this.escapeHtml(text);
+
+    const before = text.slice(0, index);
+    const match = text.slice(index, index + query.length);
+    const after = text.slice(index + query.length);
+
+    return `${this.escapeHtml(before)}<span class="suggestion-match">${this.escapeHtml(match)}</span>${this.escapeHtml(after)}`;
+  }
+
+  escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  handleKeydown(e) {
+    if (!this.isVisible()) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        this.moveHighlight(1);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        this.moveHighlight(-1);
+        break;
+      case "Enter":
+        if (this.highlightedIndex >= 0) {
+          e.preventDefault();
+          this.selectSuggestion(this.highlightedIndex);
+        }
+        break;
+      case "Escape":
+        this.hide();
+        break;
+      case "Tab":
+        this.hide();
+        break;
+    }
+  }
+
+  moveHighlight(delta) {
+    const items = this.list.querySelectorAll('li[role="option"]');
+    if (items.length === 0) return;
+
+    let newIndex = this.highlightedIndex + delta;
+    if (newIndex < 0) newIndex = items.length - 1;
+    if (newIndex >= items.length) newIndex = 0;
+
+    this.setHighlight(newIndex);
+  }
+
+  setHighlight(index) {
+    const items = this.list.querySelectorAll('li[role="option"]');
+
+    items.forEach((item, i) => {
+      item.classList.toggle("highlighted", i === index);
+      item.setAttribute("aria-selected", i === index ? "true" : "false");
+    });
+
+    this.highlightedIndex = index;
+
+    if (items[index]) {
+      items[index].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  selectSuggestion(index) {
+    const suggestion = this.suggestions[index];
+    if (!suggestion) return;
+
+    this.input.value = suggestion.model_number;
+    this.hide();
+
+    if (this.onSelect) {
+      this.onSelect(suggestion);
+    }
+  }
+
+  handleBlur() {
+    setTimeout(() => this.hide(), 150);
+  }
+
+  handleFocus() {
+    if (this.input.value.trim().length >= MIN_QUERY_LENGTH && this.suggestions.length > 0) {
+      this.show();
+    }
+  }
+
+  showLoading() {
+    this.list.innerHTML = "";
+    this.list.classList.add("loading", "visible");
+    this.input.setAttribute("aria-expanded", "true");
+  }
+
+  show() {
+    this.list.classList.remove("loading");
+    this.list.classList.add("visible");
+    this.input.setAttribute("aria-expanded", "true");
+  }
+
+  hide() {
+    this.list.classList.remove("visible", "loading");
+    this.input.setAttribute("aria-expanded", "false");
+    this.highlightedIndex = -1;
+  }
+
+  isVisible() {
+    return this.list.classList.contains("visible");
+  }
+}
+
+// Initialize autocomplete if elements exist
+if (suggestionsList) {
+  new Autocomplete(modelInput, suggestionsList, (suggestion) => {
+    // Optionally auto-submit when a suggestion is selected
+    // form.requestSubmit();
+  });
+}
+
+// ==================== SEARCH RESULTS ====================
 
 const renderStatus = (message, isError = false) => {
   const status = document.createElement("div");

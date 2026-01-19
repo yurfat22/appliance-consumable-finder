@@ -37,14 +37,21 @@
           <a class="nav-link" href="contact.html">Contact Us</a>
         </nav>
         <form id="search-form" class="nav-search">
-          <input
-            id="model"
-            name="model"
-            type="search"
-            placeholder="Search model or part number"
-            aria-label="Search model or part number"
-            required
-          />
+          <div class="autocomplete-wrapper">
+            <input
+              id="model"
+              name="model"
+              type="search"
+              placeholder="Search model or part number"
+              aria-label="Search model or part number"
+              autocomplete="off"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="suggestions-list"
+              required
+            />
+            <ul id="suggestions-list" class="suggestions-dropdown" role="listbox" aria-label="Model suggestions"></ul>
+          </div>
           <button type="submit">Search</button>
         </form>
       </div>

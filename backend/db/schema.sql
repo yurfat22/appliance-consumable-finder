@@ -1,3 +1,6 @@
+-- Enable trigram extension for fuzzy search
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 CREATE TABLE IF NOT EXISTS brands (
   id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL UNIQUE
@@ -19,6 +22,10 @@ CREATE TABLE IF NOT EXISTS models (
 
 CREATE INDEX IF NOT EXISTS idx_models_model_number_lower
   ON models (LOWER(model_number));
+
+-- GIN index for fast trigram similarity searches (fuzzy matching)
+CREATE INDEX IF NOT EXISTS idx_models_model_number_trgm
+  ON models USING GIN (LOWER(model_number) gin_trgm_ops);
 
 CREATE TABLE IF NOT EXISTS consumables (
   id BIGSERIAL PRIMARY KEY,
