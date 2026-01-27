@@ -239,8 +239,8 @@ class Autocomplete {
 // Initialize autocomplete if elements exist
 if (suggestionsList) {
   new Autocomplete(modelInput, suggestionsList, (suggestion) => {
-    // Optionally auto-submit when a suggestion is selected
-    // form.requestSubmit();
+    // Auto-submit when a suggestion is selected
+    form.requestSubmit();
   });
 }
 
