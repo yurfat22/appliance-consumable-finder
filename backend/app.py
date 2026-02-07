@@ -75,6 +75,18 @@ class CategoryGroup(BaseModel):
     brands: List[BrandGroup]
 
 
+class PopularFilter(BaseModel):
+    filter_name: str
+    sku: str
+    model_count: int
+    purchase_url: Optional[str] = None
+
+
+class BrandFilters(BaseModel):
+    brand: str
+    filters: List[PopularFilter]
+
+
 class ContactRequest(BaseModel):
     name: str
     email: EmailStr
@@ -382,6 +394,62 @@ def suggestions(
 @app.get("/api/categories", response_model=List[CategoryGroup])
 def list_categories() -> List[CategoryGroup]:
     return list_categories_db()
+
+
+@app.get("/api/popular-filters", response_model=List[BrandFilters])
+def popular_filters() -> List[BrandFilters]:
+    """Return the most popular water filters grouped by brand with compatible model counts."""
+    if not DB_POOL:
+        raise RuntimeError("Database pool is not initialized.")
+
+    with DB_POOL.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT b.name AS brand,
+                       c.name AS filter_name,
+                       c.sku,
+                       c.purchase_url,
+                       c.asin,
+                       COUNT(DISTINCT mc.model_id) AS model_count
+                FROM model_consumables mc
+                JOIN consumables c ON mc.consumable_id = c.id
+                JOIN models m ON mc.model_id = m.id
+                JOIN brands b ON m.brand_id = b.id
+                WHERE c.type IN ('Water Filter', 'filter')
+                GROUP BY b.name, c.name, c.sku, c.purchase_url, c.asin
+                HAVING COUNT(DISTINCT mc.model_id) >= 5
+                ORDER BY b.name, COUNT(DISTINCT mc.model_id) DESC
+                """
+            )
+            rows = cur.fetchall()
+
+    brand_map: dict[str, List[PopularFilter]] = {}
+    for row in rows:
+        brand, filter_name, sku, purchase_url, asin, model_count = row
+
+        # Build affiliate link using same fallback logic
+        url = purchase_url
+        if url:
+            url = add_amazon_affiliate_tag(url, AFFILIATE_TAG)
+        elif asin:
+            url = build_amazon_product_url(asin, AFFILIATE_TAG)
+        elif sku:
+            url = build_amazon_search_url(sku, AFFILIATE_TAG)
+
+        brand_map.setdefault(brand, []).append(
+            PopularFilter(
+                filter_name=filter_name,
+                sku=sku,
+                model_count=model_count,
+                purchase_url=url,
+            )
+        )
+
+    return [
+        BrandFilters(brand=brand, filters=filters)
+        for brand, filters in sorted(brand_map.items())
+    ]
 
 
 @app.get("/api/contractor", response_model=Contractor)

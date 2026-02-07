@@ -327,3 +327,76 @@ form.addEventListener("submit", async (event) => {
     renderStatus("Could not reach the server. Is the backend running?", true);
   }
 });
+
+// ==================== POPULAR FILTERS ====================
+
+const escapeText = (str) => {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+};
+
+const loadPopularFilters = async () => {
+  const container = document.getElementById("popular-filters");
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${apiBase}/api/popular-filters`);
+    if (!res.ok) return;
+
+    const brandGroups = await res.json();
+    if (!brandGroups.length) return;
+
+    const heading = document.createElement("h2");
+    heading.className = "popular-filters-heading";
+    heading.textContent = "Popular Water Filters by Brand";
+    container.appendChild(heading);
+
+    const list = document.createElement("div");
+    list.className = "pf-list";
+
+    brandGroups.forEach((group) => {
+      const row = document.createElement("div");
+      row.className = "pf-brand-row";
+
+      const brandLabel = document.createElement("span");
+      brandLabel.className = "pf-brand-label";
+      brandLabel.textContent = group.brand;
+      row.appendChild(brandLabel);
+
+      const pills = document.createElement("div");
+      pills.className = "pf-pills";
+
+      group.filters.forEach((filter) => {
+        const pill = document.createElement("a");
+        pill.className = "pf-pill";
+        if (filter.purchase_url) {
+          pill.href = filter.purchase_url;
+          pill.target = "_blank";
+          pill.rel = "noopener noreferrer";
+        }
+
+        const pillName = document.createElement("span");
+        pillName.className = "pf-pill-name";
+        pillName.textContent = filter.sku;
+        pill.appendChild(pillName);
+
+        const pillCount = document.createElement("span");
+        pillCount.className = "pf-pill-count";
+        pillCount.textContent = `${filter.model_count.toLocaleString()}`;
+        pill.appendChild(pillCount);
+
+        pills.appendChild(pill);
+      });
+
+      row.appendChild(pills);
+      list.appendChild(row);
+    });
+
+    container.appendChild(list);
+  } catch (err) {
+    console.error("Failed to load popular filters:", err);
+  }
+};
+
+loadPopularFilters();
