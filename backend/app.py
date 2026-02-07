@@ -281,10 +281,11 @@ def list_categories_db() -> List[CategoryGroup]:
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT m.id, m.model_number, b.name, c.name
+                SELECT DISTINCT m.id, m.model_number, b.name, c.name
                 FROM models m
                 JOIN brands b ON m.brand_id = b.id
                 JOIN categories c ON m.category_id = c.id
+                JOIN model_consumables mc ON mc.model_id = m.id
                 WHERE COALESCE(m.water_filter_missing, false) = false
                 ORDER BY c.name, b.name, m.model_number
                 """
