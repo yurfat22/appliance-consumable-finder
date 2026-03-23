@@ -555,8 +555,41 @@ section#results {
   background: var(--surface-2);
   border-radius: 12px;
   border: 1px solid var(--border);
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.consumable-thumb-link {
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.consumable-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+}
+
+.consumable-info {
+  flex: 1;
+  min-width: 0;
   display: grid;
   gap: 0.35rem;
+}
+
+.consumable-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .consumable .meta {
@@ -564,6 +597,18 @@ section#results {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .consumable {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .consumable-thumb {
+    width: 60px;
+    height: 60px;
+  }
 }
 
 .notes {
@@ -730,83 +775,103 @@ details[open] summary {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   box-shadow: var(--shadow-soft);
   animation: rise 0.45s ease both;
 }
 
 .popular-filters-heading {
   font-family: "Fraunces", "Manrope", serif;
-  font-size: 1.1rem;
-  margin: 0 0 0.65rem;
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
   letter-spacing: -0.01em;
 }
 
 .pf-list {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 1rem;
 }
 
 .pf-brand-row {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .pf-brand-label {
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   color: var(--ink);
-  min-width: 85px;
-  flex-shrink: 0;
 }
 
 .pf-pills {
   display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.pf-pill {
-  display: inline-flex;
+.pf-item {
+  display: flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 12px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  text-decoration: none;
+}
+
+.pf-item-thumb {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.pf-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.pf-item-name {
+  font-weight: 700;
+  font-size: 1rem;
   color: var(--ink);
-  font-size: 0.78rem;
-  transition: background 0.12s ease, border-color 0.12s ease;
-  cursor: pointer;
 }
 
-.pf-pill:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-}
-
-.pf-pill-name {
-  font-weight: 600;
-}
-
-.pf-pill-count {
+.pf-item-count {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.85rem;
 }
 
-.pf-pill-count::before {
-  content: "\00b7 ";
+.pf-item-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.25rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.85rem;
+  width: fit-content;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.pf-item-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.15);
 }
 
 @media (max-width: 720px) {
-  .pf-brand-label {
-    min-width: 70px;
-    font-size: 0.78rem;
+  .pf-item-thumb {
+    width: 72px;
+    height: 72px;
   }
 }
 

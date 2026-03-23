@@ -270,19 +270,44 @@ const renderResults = (appliances) => {
       const entry = document.createElement("div");
       entry.className = "consumable";
 
+      if (item.image_url) {
+        const thumbLink = document.createElement("a");
+        thumbLink.className = "consumable-thumb-link";
+        thumbLink.href = item.purchase_url || "#";
+        thumbLink.target = "_blank";
+        thumbLink.rel = "noopener noreferrer";
+        const thumb = document.createElement("img");
+        thumb.className = "consumable-thumb";
+        thumb.src = item.image_url;
+        thumb.alt = item.name;
+        thumb.loading = "lazy";
+        thumbLink.appendChild(thumb);
+        entry.appendChild(thumbLink);
+      }
+
+      const info = document.createElement("div");
+      info.className = "consumable-info";
+
       const meta = document.createElement("div");
       meta.className = "meta";
       const skuLabel = item.sku ? `SKU: ${item.sku}` : "SKU: N/A";
       const asinLabel = item.asin ? `ASIN: ${item.asin}` : "";
       const idLabel = asinLabel ? `${skuLabel} · ${asinLabel}` : skuLabel;
       meta.innerHTML = `<span class="tag">${item.type}</span><span>${item.name} (${idLabel})</span>`;
-      entry.appendChild(meta);
+      info.appendChild(meta);
+
+      if (item.description) {
+        const desc = document.createElement("p");
+        desc.className = "consumable-desc";
+        desc.textContent = item.description;
+        info.appendChild(desc);
+      }
 
       if (item.notes) {
         const notes = document.createElement("div");
         notes.className = "notes";
         notes.textContent = item.notes;
-        entry.appendChild(notes);
+        info.appendChild(notes);
       }
 
       if (item.purchase_url) {
@@ -292,9 +317,10 @@ const renderResults = (appliances) => {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.textContent = "View on Amazon";
-        meta.appendChild(link);
+        info.appendChild(link);
       }
 
+      entry.appendChild(info);
       consumableList.appendChild(entry);
     });
 
@@ -368,25 +394,43 @@ const loadPopularFilters = async () => {
       pills.className = "pf-pills";
 
       group.filters.forEach((filter) => {
-        const pill = document.createElement("a");
-        pill.className = "pf-pill";
-        if (filter.purchase_url) {
-          pill.href = filter.purchase_url;
-          pill.target = "_blank";
-          pill.rel = "noopener noreferrer";
+        const item = document.createElement("div");
+        item.className = "pf-item";
+
+        if (filter.image_url) {
+          const img = document.createElement("img");
+          img.className = "pf-item-thumb";
+          img.src = filter.image_url;
+          img.alt = filter.sku;
+          img.loading = "lazy";
+          item.appendChild(img);
         }
 
-        const pillName = document.createElement("span");
-        pillName.className = "pf-pill-name";
-        pillName.textContent = filter.sku;
-        pill.appendChild(pillName);
+        const info = document.createElement("div");
+        info.className = "pf-item-info";
 
-        const pillCount = document.createElement("span");
-        pillCount.className = "pf-pill-count";
-        pillCount.textContent = `${filter.model_count.toLocaleString()}`;
-        pill.appendChild(pillCount);
+        const name = document.createElement("span");
+        name.className = "pf-item-name";
+        name.textContent = filter.sku;
+        info.appendChild(name);
 
-        pills.appendChild(pill);
+        const count = document.createElement("span");
+        count.className = "pf-item-count";
+        count.textContent = `Fits ${filter.model_count.toLocaleString()} models`;
+        info.appendChild(count);
+
+        if (filter.purchase_url) {
+          const link = document.createElement("a");
+          link.className = "pf-item-link";
+          link.href = filter.purchase_url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "View on Amazon";
+          info.appendChild(link);
+        }
+
+        item.appendChild(info);
+        pills.appendChild(item);
       });
 
       row.appendChild(pills);

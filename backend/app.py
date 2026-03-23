@@ -17,6 +17,8 @@ class Consumable(BaseModel):
     sku: str
     notes: Optional[str] = None
     purchase_url: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class Appliance(BaseModel):
@@ -80,6 +82,7 @@ class PopularFilter(BaseModel):
     sku: str
     model_count: int
     purchase_url: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class BrandFilters(BaseModel):
@@ -204,7 +207,8 @@ def search_db(model_query: str) -> List[Appliance]:
 
             cur.execute(
                 """
-                SELECT mc.model_id, c.name, c.type, c.asin, c.sku, mc.notes, c.purchase_url
+                SELECT mc.model_id, c.name, c.type, c.asin, c.sku, mc.notes, c.purchase_url,
+                       c.description, c.image_url
                 FROM model_consumables mc
                 JOIN consumables c ON mc.consumable_id = c.id
                 WHERE mc.model_id = ANY(%s)
@@ -225,6 +229,8 @@ def search_db(model_query: str) -> List[Appliance]:
                         sku=row[4],
                         notes=row[5],
                         purchase_url=row[6],
+                        description=row[7],
+                        image_url=row[8],
                     )
                 )
 
@@ -324,7 +330,8 @@ def list_categories_db() -> List[CategoryGroup]:
 
             cur.execute(
                 """
-                SELECT mc.model_id, c.name, c.type, c.asin, c.sku, mc.notes, c.purchase_url
+                SELECT mc.model_id, c.name, c.type, c.asin, c.sku, mc.notes, c.purchase_url,
+                       c.description, c.image_url
                 FROM model_consumables mc
                 JOIN consumables c ON mc.consumable_id = c.id
                 WHERE mc.model_id = ANY(%s)
@@ -345,6 +352,8 @@ def list_categories_db() -> List[CategoryGroup]:
                         sku=row[4],
                         notes=row[5],
                         purchase_url=row[6],
+                        description=row[7],
+                        image_url=row[8],
                     )
                 )
 
@@ -411,13 +420,14 @@ def popular_filters() -> List[BrandFilters]:
                        c.sku,
                        c.purchase_url,
                        c.asin,
-                       COUNT(DISTINCT mc.model_id) AS model_count
+                       COUNT(DISTINCT mc.model_id) AS model_count,
+                       c.image_url
                 FROM model_consumables mc
                 JOIN consumables c ON mc.consumable_id = c.id
                 JOIN models m ON mc.model_id = m.id
                 JOIN brands b ON m.brand_id = b.id
                 WHERE c.type IN ('Water Filter', 'filter')
-                GROUP BY b.name, c.name, c.sku, c.purchase_url, c.asin
+                GROUP BY b.name, c.name, c.sku, c.purchase_url, c.asin, c.image_url
                 HAVING COUNT(DISTINCT mc.model_id) >= 5
                 ORDER BY b.name, COUNT(DISTINCT mc.model_id) DESC
                 """
@@ -426,7 +436,7 @@ def popular_filters() -> List[BrandFilters]:
 
     brand_map: dict[str, List[PopularFilter]] = {}
     for row in rows:
-        brand, filter_name, sku, purchase_url, asin, model_count = row
+        brand, filter_name, sku, purchase_url, asin, model_count, image_url = row
 
         # Build affiliate link using same fallback logic
         url = purchase_url
@@ -443,6 +453,7 @@ def popular_filters() -> List[BrandFilters]:
                 sku=sku,
                 model_count=model_count,
                 purchase_url=url,
+                image_url=image_url,
             )
         )
 

@@ -169,6 +169,8 @@ def main() -> None:
                     "asin": asin,
                     "sku": str(consumable.get("sku", "")).strip() or None,
                     "purchase_url": purchase_url,
+                    "description": str(consumable.get("description", "")).strip() or None,
+                    "image_url": str(consumable.get("image_url", "")).strip() or None,
                 }
 
     with connect(args.database_url) as conn:
@@ -208,6 +210,8 @@ def main() -> None:
                         row["asin"],
                         row["sku"],
                         row["purchase_url"],
+                        row["description"],
+                        row["image_url"],
                     )
                     consumable_rows.append(entry)
                     if row["sku"]:
@@ -220,13 +224,15 @@ def main() -> None:
                 for chunk in chunked(consumable_rows_by_sku, args.batch_size):
                     cur.executemany(
                         """
-                        INSERT INTO consumables (name, type, asin, sku, purchase_url)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO consumables (name, type, asin, sku, purchase_url, description, image_url)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (sku) DO UPDATE SET
                             name = EXCLUDED.name,
                             type = EXCLUDED.type,
                             asin = COALESCE(EXCLUDED.asin, consumables.asin),
-                            purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url)
+                            purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url),
+                            description = COALESCE(EXCLUDED.description, consumables.description),
+                            image_url = COALESCE(EXCLUDED.image_url, consumables.image_url)
                         """,
                         chunk,
                     )
@@ -234,13 +240,15 @@ def main() -> None:
                 for chunk in chunked(consumable_rows_by_asin, args.batch_size):
                     cur.executemany(
                         """
-                        INSERT INTO consumables (name, type, asin, sku, purchase_url)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO consumables (name, type, asin, sku, purchase_url, description, image_url)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (asin) DO UPDATE SET
                             name = EXCLUDED.name,
                             type = EXCLUDED.type,
                             sku = COALESCE(EXCLUDED.sku, consumables.sku),
-                            purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url)
+                            purchase_url = COALESCE(EXCLUDED.purchase_url, consumables.purchase_url),
+                            description = COALESCE(EXCLUDED.description, consumables.description),
+                            image_url = COALESCE(EXCLUDED.image_url, consumables.image_url)
                         """,
                         chunk,
                     )

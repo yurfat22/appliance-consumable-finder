@@ -33,7 +33,9 @@ CREATE TABLE IF NOT EXISTS consumables (
   type TEXT NOT NULL,
   asin TEXT UNIQUE,
   sku TEXT UNIQUE,
-  purchase_url TEXT
+  purchase_url TEXT,
+  description TEXT,
+  image_url TEXT
 );
 
 CREATE TABLE IF NOT EXISTS model_consumables (
